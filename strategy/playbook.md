@@ -8978,3 +8978,25 @@ totals, not hand re-sums. Ruling: no boundary change at n=1 event. The
 failure was in the method: the final flip extrapolated a trough-hours
 pace. The diurnal-matched pace rule (above) fixes that.
 
+## 2026-10-10 20:15Z update: Musk Oct8-10 90-114 OVV row settled (FULL, RETRO-20261010-2015)
+
+| Row | own/mkt | Side | Edge | Result | CF pnl |
+|---|---|---|---|---|---|
+| Musk Oct8-10 90-114 (`a453b674acf5`, OVV) | 0.50/0.742 | No | +0.24 | Yes | -5.00 |
+
+Mechanical ledger (`core/counterfactual.py ledger`): OVV 246 rows, 238
+fillable, 102W/136L, +$196.86, dBrier +0.0258 (was 237 fillable, +$201.86).
+Tool totals, not hand re-sums. Ruling: no boundary change. The veto saved
+$5.
+
+- **Small-n empirical windows shrink toward the book (RETRO-20261010-2015,
+  Musk Oct8-10 90-114).** Four snapshots (0.43/0.50/0.79/0.88 vs mid
+  0.557/0.742/0.845/0.9645) all sat below a liquid book. The bracket won,
+  and the family cost dBrier +0.345. Every row priced its tails from n<=9
+  same-clock days (or n=4 "quiet regime" days), so each tail is quantized
+  at 1/n and set by one or two burst days. Rule: when a postcount estimate
+  comes from an empirical window with n < 15 days, record
+  `est = w*model + (1-w)*mid` with `w = n/(n+10)`, and write both the raw
+  model value and w in the note. A regime split that leaves n < 5 per
+  regime is not a conditioning input. n=1 family; re-grade after 3
+  families.
