@@ -3032,6 +3032,18 @@ measured: RYD (returnyoutubedislikeapi) lagged the YouTube watch page by
 only ~19k views at 20:20Z Sep25, so a RYD read stamped with its fetch time
 counts as a dated read when YouTube 429s.
 
+**Pace must be diurnal-matched (RETRO-20261010-1815, MrBeast
+plN7JMbadRg wk1).** At 08:19Z Oct10 I projected the 02-08Z RYD pace
+(0.58M/h, US night) forward into 08-16Z (US Saturday morning) and
+flipped from 215+ to 207-215. The count finished 215-223, the market's
+side, and that flip cost +0.17/+0.18 dBrier on both rows. The two
+earlier reads, taken before the flip, had been right. When you project
+a count to a deadline, do not extrapolate the most recent window's pace
+if that window was in a different part of the US day than the window
+being projected. Use the pace from the same UTC hours a day earlier,
+scaled by the multi-day decay, or the trailing 24h average. A decline
+that only shows up in a trough window is not evidence of decay.
+
 **2026-09-04 update (LIGHT tick 06:29Z, settled by resolve.py; 4 rows,
 two OpenAI Astra release-timeline markets, two sequential snapshots
 each):**
