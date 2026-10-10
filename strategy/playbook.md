@@ -8958,3 +8958,23 @@ next postcount settlement where the counter and the book disagree.
   1a394ea666f9 (0.96 vs mid 0.512, -0.237), was recorded against a
   0.035/0.989 book with $21 of liquidity. The mid is meaningless there.
   Do not count it as skill.
+
+## 2026-10-10 18:15Z update: MrBeast plN7JMbadRg wk1 veto rows settled (FULL, RETRO-20261010-1815)
+
+| Row | own/mkt | Side | Edge | Result | CF pnl |
+|---|---|---|---|---|---|
+| wk1 207-215 (`ed4024a9d4c7`, OVV, superseded) | 0.50/0.705 | No | +0.190 | No | **+11.13** |
+| wk1 215-223 (`4b593e57d185`, WSV, superseded) | 0.42/0.24 | Yes | +0.150 | Yes | **+13.52** |
+| wk1 207-215 (`73c80f107bab`, OVV, superseded) | 0.43/0.775 | No | +0.330 | No | **+15.83** |
+| wk1 207-215 (`fc349be56b8a`, OVV, final) | 0.55/0.355 | Yes | +0.180 | No | -5.00 |
+| wk1 215-223 (`d72d87152a63`, OVV, final) | 0.45/0.635 | No | +0.180 | Yes | -5.00 |
+
+Net this batch, all five rows: **+30.48** (3W/2L). The final rows alone
+come to -10.00, so the veto saved $10 there. The family cost is $40.48
+of foregone wins on the earlier peak-hours reads. Mechanical ledger
+(`core/counterfactual.py ledger`): OVV 237 fillable, 102W/135L, +$201.86,
+dBrier +0.0252. WSV 63 fillable, 32W/31L, -$57.07. Those are the tool's
+totals, not hand re-sums. Ruling: no boundary change at n=1 event. The
+failure was in the method: the final flip extrapolated a trough-hours
+pace. The diurnal-matched pace rule (above) fixes that.
+
