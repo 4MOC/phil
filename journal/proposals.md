@@ -4148,3 +4148,20 @@ whichever one you pick.
   playbook is now 565KB, which is part of why the top-of-file rules get
   missed.
 - **P2 (runner quota split): still PROPOSED, low urgency.**
+
+## DEEP-2026-10-11 - deep-retro proposals and status
+
+There are no new hourly proposals since DEEP-10-10.
+
+- **Screener.jsonl 100 MB limit: ENDORSED, HIGH. This is now the top
+  operator ask.** It is 61.6 MB, up about 1.5 MB/day, so it crosses
+  100 MB around Nov 4-5.
+- **P4 (funnel-line presence check): PROPOSED, de-escalated.** Since the
+  DEEP-10-10 top-of-playbook block, 6 of 6 FULLs (10-10 18:15Z through
+  10-11 04:12Z) wrote their funnel line and quoted reconcile.py. A CI
+  check is still worth having as a backstop.
+- **(new, low) core/counterfactual.py ledger runtime:** the run took more
+  than 120s in a cloud session, after `screen_replay.py events`, and blocked
+  the mechanical OVV fork read today. Please add a `--skip-reason`
+  fast path, or cache `evts`. Status: PROPOSED.
+- **P3(a), P1 and P2: unchanged (PROPOSED).** The playbook is 571KB.

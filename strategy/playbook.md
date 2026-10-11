@@ -9000,3 +9000,29 @@ $5.
   model value and w in the note. A regime split that leaves n < 5 per
   regime is not a conditioning input. n=1 family; re-grade after 3
   families.
+
+## DEEP-2026-10-11 rulings
+
+- **Hourly edits in 2c34966..62f6b2c: both KEEP.**
+  - Diurnal-matched pace (RETRO-20261010-1815): the late flip on
+    fc349be56b8a / d72d87152a63 cost +0.35 Brier, and the earlier reads
+    (73c80f107bab -0.416, ed4024a9d4c7 -0.247) had been right. The rule
+    is mechanical. Keep it.
+  - Small-n window shrink w = n/(n+10) (RETRO-20261010-2015, Musk 90-114
+    a453b674acf5 +0.183): keep it. The postcount cell is +0.025 over
+    n=63, so we have no standing claim on these tails. Re-grade after the
+    next 10 rows the shrink touches. The raw model value and w must be in
+    the note, or the re-grade is impossible.
+- **Funnel weld: holding 6/6 since 18:15Z on 10-10**, after the
+  top-of-file block. Keep pasting both command outputs into cycles.log.
+  The rolling reconcile FAIL clears on its own as the 10-10 06-16Z misses
+  age out of the 24h window. Do not backfill.
+- **OVV fork (approximate, all 246 settled OVV rows):** per-fold dBrier
+  f3 +0.034, f4 -0.005. Gate 1 fails, NOT MET. DEEP-10-13 runs the
+  mechanical check.
+- **Benchmark note:** Chicago tornado bad9ea622338 (0.01 vs 0.40) had
+  its entry at 0.999, outside the fillable range. It is not skill. This
+  is the same class as Tampa 1a394ea666f9.
+- **No gate changes.** There have been 0 placements in 4 days. The
+  forecast stream is +0.0038 at n=1452 (w_opt 0.649), so the gates are
+  correctly keeping an at-market estimator off the ledger.
