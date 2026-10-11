@@ -9026,3 +9026,17 @@ $5.
 - **No gate changes.** There have been 0 placements in 4 days. The
   forecast stream is +0.0038 at n=1452 (w_opt 0.649), so the gates are
   correctly keeping an at-market estimator off the ledger.
+
+## 2026-10-11 20:15Z update: PMO Dem Senate Oct-9 WSV rows settled (FULL, RETRO-20261011-2015)
+
+| Row | own/mkt | Side | Edge | Result | CF pnl |
+|---|---|---|---|---|---|
+| PMO Dem Senate 64-66 Oct 9 (`8ab87e366ec4`, WSV) | 0.03/0.32 | No | +0.210 (No @0.76) | No | +1.58 |
+| PMO Dem Senate 60-62 Oct 9 (`88d1b2dd9235`, WSV) | 0.30/0.2165 | Yes | -0.099 (Yes @0.399) | Yes | +7.53 (negative-edge side; not a trade the gates would take) |
+
+Mechanical ledger (`core/counterfactual.py ledger`): WSV 75 rows, 65 trd,
+34W/31L, -$47.96, dBrier -0.0045. Tool totals, not hand re-sums. Ruling:
+no boundary change. Both books were 0.16-0.37 wide on $100 liquidity;
+the driftless resolver-series recording rule (RETRO-20260925-2015) scored
+the family -0.132 dBrier vs mid, but a mid in a book that wide is not a
+fillable price. Recording rule stands; category bar stands.
