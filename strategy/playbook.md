@@ -4512,6 +4512,20 @@ listed source gives, not the lowest of the Fri-night projections. When
 Fri incl previews is >= 40%, the Fri-night weekend projection ran ~20%
 high (10M vs 8M). Post-rule rows 5 (3 events), net dBrier -0.39.
 Box-office n=33, mean dBrier -0.0021. Still no-bet.
+Tally + rule change (RETRO-20261012-2215, evidence `d60414387526`,
+`f587533db89c`, `313457179cc4`, `be436d82c541`): Other Mommy OW and Verity
+wk2 both landed in the BOOK's modal bracket (0.73 / 0.56) while my ladders
+split mass onto neighbours (peaks 0.47 / 0.30); net dBrier +0.693 on 5
+rows. Post-rule rows 10 (5 events), net dBrier +0.30 -- the rule now loses
+to the book. Box-office n=38, mean dBrier ~+0.016. Changes: (1) the
+Digger "Fri-night projection runs ~20% high" haircut is RETIRED as a
+standalone override (n=1, refuted by Other Mommy where Deadline's Fri-night
+27.5M held). (2) Book-modal floor: when recording Fri-night/Sat brackets and
+the book's modal bracket mid is >= 0.55 and lies within one bracket of my
+press centre, the book has likely seen Saturday tracking I cannot read --
+record that bracket at >= (book mid - 0.10) and rescale neighbours. My own
+sd of 1.3-1.5M is too wide once Friday actuals are in; use sd <= 1.0M on
+the press centre. Still no-bet; review at 8 post-rule events.
 
 **2026-09-22 ~18:15Z update (FULL cycle, cloud; resolve.py settled 14
 forecasts, 2 `outside-view-veto`).** Both rows are the Trump x Greenland
