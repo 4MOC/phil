@@ -9058,3 +9058,15 @@ fillable price. Recording rule stands; category bar stands.
 - **Funnel weld holding:** 2 single-row gaps in 24h, down from 25. A
   TRIGGERED cycle that records a forecast still owes a funnel line
   (ee9b886749ca, 10-12 04:00Z, had none).
+
+## Self-computed knife-edges cap at 0.40-0.60 (RETRO-20261012-1400)
+
+- When my own computation (seat model, count extrapolation, rounding
+  rule) flags the deciding margin as within the noise of the
+  still-uncounted or unrounded input, the leg that flips on that margin
+  is recorded within 0.40-0.60. An independent source that breaks the
+  tie lifts the cap. Evidence: Berlin CDU 35-39 b3b518386948 at 0.62 on a
+  flagged 0.643-vs-0.637 remainder edge lost (dBrier +0.186 vs mid). A leg
+  whose outcome is the same on both sides of the edge is not capped
+  (house 163+ ccc9f72c326e at 0.25 was right). n=1: a confidence cap, not
+  a bet gate.
