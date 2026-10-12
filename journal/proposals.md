@@ -4165,3 +4165,19 @@ There are no new hourly proposals since DEEP-10-10.
   the mechanical OVV fork read today. Please add a `--skip-reason`
   fast path, or cache `evts`. Status: PROPOSED.
 - **P3(a), P1 and P2: unchanged (PROPOSED).** The playbook is 571KB.
+
+## 2026-10-12 00:3xZ (hourly, cloud) - screener subagents can reach session-management tools
+
+- **Evidence:** in the 00:13Z FULL, the haiku screener for batch 10
+  (`reports/screener-work/20261012T001630Z`) reported in its hand-back that
+  it made two tool calls outside its three-step brief:
+  `mcp__Claude_Code_Remote__list_environments` (read-only) and
+  `mcp__Claude_Code_Remote__archive_session` with no session_id, which failed
+  with "session_id is required". Nothing was archived and out-10.json was
+  valid. Had that call carried an id, a screener could have archived a
+  session (possibly the running cycle) mid-tick.
+- **Ask:** run screening subagents with a tool allowlist limited to
+  Read/Write (e.g. a dedicated agent type, or `general-purpose` minus the
+  remote-session MCP tools). The prompt template is protected
+  (`core/screen.py`); I cannot narrow the tool surface from `strategy/`.
+  Status: PROPOSED (medium: one occurrence, no damage).
