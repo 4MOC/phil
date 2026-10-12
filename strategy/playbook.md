@@ -9070,3 +9070,24 @@ fillable price. Recording rule stands; category bar stands.
   whose outcome is the same on both sides of the edge is not capped
   (house 163+ ccc9f72c326e at 0.25 was right). n=1: a confidence cap, not
   a bet gate.
+
+## 2026-10-12 18:15Z update: Musk Oct10-12 settled (FULL, RETRO-20261012-1815)
+
+| Row | own/mkt | Side | Edge | Result | CF pnl |
+|---|---|---|---|---|---|
+| Musk Oct10-12 40-64 (`1c66d0d76610`, OVV) | 0.55/0.67 | No | +0.11 (No @0.34) | Yes | -5.00 |
+
+Mechanical ledger: OVV 248 rows, 240 fillable, 103W/137L, +$199.68,
+dBrier +0.0238. Tool totals. Ruling: no boundary change; the veto saved $5.
+
+- **Small-n shrink covers subjective mixtures too (RETRO-20261012-1815).**
+  The Oct10-12 rows used a "judgment-mixture" (guessed regime weights and
+  remainder sds), so the n/(n+10) rule did not bind, and 5 of 6
+  snapshots sat below a liquid book on the bracket that won (+0.158
+  dBrier; raw 0.47 / recorded 0.55 vs mid 0.67 on the 40-64 leg). A
+  guessed regime mixture has no data n. Rule: a postcount estimate whose
+  tail comes from guessed weights/sds (not counted days) uses w = 0.25,
+  i.e. `est = 0.25*model + 0.75*mid`, until the tracker covers ≥ 1/3 of
+  the window; after that, use the empirical-window rule. Note the raw
+  model value and w. Family 2 of 3 for the shrink re-grade (both
+  families: book beat the self-model on the modal bracket).
