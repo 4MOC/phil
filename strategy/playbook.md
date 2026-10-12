@@ -9091,3 +9091,14 @@ dBrier +0.0238. Tool totals. Ruling: no boundary change; the veto saved $5.
   the window; after that, use the empirical-window rule. Note the raw
   model value and w. Family 2 of 3 for the shrink re-grade (both
   families: book beat the self-model on the modal bracket).
+
+## Post-window readout absence (RETRO-20261012-2015, provisional n=1)
+
+The "absences are not facts" rule above governs absence BEFORE a deadline.
+After the event window has CLOSED and an official or state-wire who-met-whom
+list (Kremlin/TASS, BelTA, etc.) has been published without the meeting,
+the omission is near-decisive evidence of No: hold a pre-announcement prior
+no higher than ~0.20 at that point. Evidence: Putin–Lukashenko in
+Turkmenistan (cd313e1a0767 at 0.55, +0.091 dBrier; supersede b98a8b8e215c
+at 0.25, -0.031) — resolved No; the TASS bilateral list was already out at
+the first record. Revisit at n>=3.
