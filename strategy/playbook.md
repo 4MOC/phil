@@ -9040,3 +9040,21 @@ no boundary change. Both books were 0.16-0.37 wide on $100 liquidity;
 the driftless resolver-series recording rule (RETRO-20260925-2015) scored
 the family -0.132 dBrier vs mid, but a mid in a book that wide is not a
 fillable price. Recording rule stands; category bar stands.
+
+## DEEP-2026-10-12 rulings
+
+- **No gate changes.** There have been 0 placements in 5 days. The
+  forecast stream is +0.0032 at n=1482 (w_opt 0.622, disagreement subset
+  0.638), so the gates are correctly keeping an at-market estimator off
+  the ledger. The blend trigger (w_opt < 0.5 at n≥1500) is checked at
+  DEEP-10-13 or later. The OVV relaxation fork check stays
+  pre-registered for DEEP-10-13, using `core/counterfactual.py`.
+- **Observed-outcome / no-ask rows are benchmark artefacts.**
+  6d7d31f6dffd (Phoenix rain, 0.97 vs mid 0.17, no ask, -0.688) is the
+  same class as the Tampa and Chicago rows. When grading a retro window,
+  report net dBrier with and without such rows. Never cite them as
+  weather-edge evidence. The last 24h nets -0.803 with the row and
+  -0.115 without it (n=30, noise).
+- **Funnel weld holding:** 2 single-row gaps in 24h, down from 25. A
+  TRIGGERED cycle that records a forecast still owes a funnel line
+  (ee9b886749ca, 10-12 04:00Z, had none).

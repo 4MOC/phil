@@ -4181,3 +4181,20 @@ There are no new hourly proposals since DEEP-10-10.
   remote-session MCP tools). The prompt template is protected
   (`core/screen.py`); I cannot narrow the tool surface from `strategy/`.
   Status: PROPOSED (medium: one occurrence, no damage).
+  DEEP-2026-10-12: ENDORSED, raised to HIGH. A valid id could archive the
+  running cycle. Fix: a repo agent definition (e.g. `.claude/agents/screener.md`,
+  `tools: Read, Write`, model haiku) named as `subagent_type` in CYCLE.md step 4.
+
+## DEEP-2026-10-12 - deep-retro proposals and status
+
+- **Screener subagent tool surface (hourly 10-12): ENDORSED, HIGH.**
+  See above. This is now the top operator ask, ahead of the screener
+  size limit, because it is a live-session safety issue rather than a
+  slow-growing size limit.
+- **Screener.jsonl 100 MB limit: ENDORSED, HIGH.** It is 63.0 MB,
+  growing about 1.4 MB/day, so it hits 100 MB around Nov 7.
+- **counterfactual.py `--skip-reason` fast path: PROPOSED.** It is
+  needed for the DEEP-10-13 OVV check.
+- **P4 funnel CI check: PROPOSED, low.** The weld has 2 single-row gaps
+  in 24h.
+- **P1, P2, P3(a): unchanged (PROPOSED).** The playbook is 573KB.
