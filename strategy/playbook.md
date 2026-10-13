@@ -9205,6 +9205,16 @@ Turkmenistan (cd313e1a0767 at 0.55, +0.091 dBrier; supersede b98a8b8e215c
 at 0.25, -0.031) — resolved No; the TASS bilateral list was already out at
 the first record. Revisit at n>=3.
 
+**Scope (RETRO-20261013-1815):** the near-decisive reading needs a
+PUBLISHED official list. Incident markets that resolve on lagged
+reporting (UKMTO/JMIC, gCaptain, Reuters shipping strikes) have no such
+list. A few hours after the window closes, the absence of a report is
+still weak evidence: shade at most ~0.05 below the base rate, matching
+the Kyiv cap. Evidence: 09e63789f04c Hormuz Oct 7. The base rate was
+~1.5 incidents/day (P>=1 ~0.78), and I found no report by 02:40Z on Oct 8.
+I recorded 0.60 against a 0.80 mid. It resolved Yes, dBrier +0.120.
+Provisional at n=1; revisit at n>=3.
+
 ## DEEP-2026-10-13 rulings
 
 - **OVV relaxation fork: NOT MET (22nd).** I used `core/counterfactual.py
