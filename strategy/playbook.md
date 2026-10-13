@@ -4526,6 +4526,19 @@ press centre, the book has likely seen Saturday tracking I cannot read --
 record that bracket at >= (book mid - 0.10) and rescale neighbours. My own
 sd of 1.3-1.5M is too wide once Friday actuals are in; use sd <= 1.0M on
 the press centre. Still no-bet; review at 8 post-rule events.
+Tally (RETRO-20261013-0015, evidence `ed7635ddee76`, `fb375510e91e`,
+`6f41bbf55b7b`, `f82d5a3aba56`): Social Reckoning OW landed 5-7M, at
+Sony's $6M Sat-AM projection; the book's modal <5M (0.72 at 12:19Z, 0.56 at
+22:17Z) was wrong. My 4 rows net dBrier -0.408. Post-rule rows 14 (6
+events), net ~-0.11 -- the press centre is back ahead of the book on
+aggregate. The book-modal floor (adopted after these rows were recorded)
+would have COST here: <5M floored at 0.625 and 5-7M rescaled to ~0.32 at
+12:19Z adds ~+0.13 dBrier (the 22:17Z book at 0.56 floors at 0.46, below my
+0.50, no effect). Floor record: helped 2 events, hurt 1. Kept unchanged
+(n=3), but the floor is a ceiling on confidence in the book, not a rule
+that the book is right: when the press centre is a studio Sat-AM figure
+already built on Friday actuals, note that in the row. Box-office forecasts
+n=42, sum dBrier +0.217, mean +0.0052. Still no-bet.
 
 **2026-09-22 ~18:15Z update (FULL cycle, cloud; resolve.py settled 14
 forecasts, 2 `outside-view-veto`).** Both rows are the Trump x Greenland
