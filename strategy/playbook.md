@@ -1567,6 +1567,13 @@ brier_delta +0.0838 on n=35. A primary-source check (news page, models page)
 still runs, but only a POSITIVE finding (the launch is live, or an official
 date) moves est_prob off the mid. "Not out yet" earlier on the day moves
 nothing. Re-grade the shade views at n=8.
+**Pre-record check (RETRO-20261013-2015):** an AI/product release-rung
+est_prob off the ladder mid MUST cite a primary-source URL in the note;
+otherwise record at the mid. Evidence: the Gemini 4/Argon family
+(settled Oct 13) had 5 off-mid rows without a primary source (178e361e5481,
+d7e0ffbd54f7, 16e825efdc9c, 1413e7390f0b, 3d8e42d35baa), all below the mid,
+all Yes, family dBrier +0.596. The 13 mid rows were flat. Later-than-market
+reads are now 12/12 against me.
 
 **Treasury touch drift rule (RETRO-20260928-2215).** For a Treasury
 par-yield touch rung ("hit X% in <month>") with 5 or fewer prints left,
