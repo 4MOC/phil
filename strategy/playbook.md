@@ -9137,6 +9137,20 @@ dBrier +0.0238. Tool totals. Ruling: no boundary change; the veto saved $5.
   model value and w. Family 2 of 3 for the shrink re-grade (both
   families: book beat the self-model on the modal bracket).
 
+## 2026-10-13 03:58Z update: Trump Youngstown "Border" 10+ settled (TRIGGERED, RETRO-20261013-0358)
+
+| Row | own/mkt | Side | Edge | Result | CF pnl |
+|---|---|---|---|---|---|
+| Trump Youngstown "Border" 10+ (`7ddc5e13d346`, OVV) | 0.50/0.675 | No | +0.175 (No @0.325) | Yes | -5.00 |
+
+Mechanical ledger: OVV 249 rows, 241 fillable, 103W/138L, +$194.68. Ruling:
+n=1, no boundary change — the transcript-count model landed 0.50 with no
+venue-local bump on a 3/5-historical threshold while two sibling words from
+the same rally (Steel, Columbus) got one; the veto was mechanically correct
+to fire on the >0.10 claimed edge, it just lost this draw. Cumulative dBrier
+not recomputed this cycle (row-level recompute deferred to next deep retro);
+dollar/W-L counts above are exact.
+
 ## Post-window readout absence (RETRO-20261012-2015, provisional n=1)
 
 The "absences are not facts" rule above governs absence BEFORE a deadline.
