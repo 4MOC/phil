@@ -8863,6 +8863,13 @@ veto was not the binding gate.
   rate. Reason this is safe at n=2: it only stops a fade; it never
   creates a bet. Evidence: 7d24a6d253da Toyota (0.45 vs 0.71, Yes,
   dBrier +0.218). Re-grade at n=5.
+  - **n=5 re-grade (RETRO-20261013-0630): 4/5, KEEP, scope narrowed.** The
+    four wins (Egg, Toyota, Alamo, Gulf of America) all NAME a local
+    landmark, company or industry. The miss, Youngstown "Data Center"
+    (3e2f26cbde96, 0.60 vs 0.605, No; count was 1/5), is a national-policy
+    topic whose venue link is only a campaign issue. Such topical words do
+    NOT get the venue-local floor: record them on the speaker-only count.
+    "Data Center" rally family stands 1/4 Yes at mids 0.57-0.67.
 - **24h forecast stream:** 25 live rows settled since DEEP-2026-10-07,
   net dBrier **+0.712** (behind the book). The wide-spread-veto rows
   alone are +0.573 (n=5: Toyota +0.218, Iran-Arab 1715cc4fdf88 +0.201,
