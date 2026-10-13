@@ -6897,6 +6897,42 @@ Running read: near-line reads reproduce PM (no claimable edge), far-line
 reads (SD@COL) lose to PM. Still forecast-only; nothing yet argues for an
 edge class here.
 
+**Fourth candidate instance overall, fitted-sigma genre, NOT yet tallied
+(2026-10-13 03:5xZ TRIGGERED cycle):** CLE@TB (Oct 14), three new PM markets fired the
+watcher on creation: O/U7.5 (5640089), O/U5.5 (5640088), and a
+underdog-framed Spread: Guardians(-1.5) (5640086, see below — separate
+method). Totals books split across two lines this time (6.5: 4 books,
+7.0: 5 books) — real cross-book dispersion to fit from, like SD@COL/BOS@NYY
+rather than imported-sigma. Power-devig consensus P(Over6.5)=0.5165,
+P(Over7.0)=0.4840; fit gives sigma=6.14, mu=6.75 (wider sigma than the
+SD@COL fit's 4.39 — only a 0.5-run gap between anchor lines here, vs
+SD@COL's 1-run gap, so the fit is noisier). Read at PM's lines:
+P(Over7.5)=0.4516 vs ask 0.43/bid 0.41 (edge 0.02 at ask); P(Over5.5)=0.5809
+vs ask 0.64/bid 0.63, i.e. Under 0.419 vs ask 0.37 (edge 0.049 at ask).
+Both forecast-only (f4b1ecd5d257, 0096c34309c9), fitted-sigma bar still at
+2/6 after the BOS@NYY grading, so this is the 3rd fitted-sigma candidate,
+not yet settled. Grade at settlement (~2026-10-14 03:00Z-ish, first pitch
+2026-10-14T00:00Z + game length).
+
+**Dog -1.5 decay-ratio cross-market extrapolation, second use (same
+cycle):** the Guardians(-1.5) spread market is the underdog's alt line —
+structurally benchmark-unreachable by direct devig (2026-08-06 finding
+above: books only quote the favorite's -1.5/dog's +1.5). Applied the same
+ad-hoc decay-ratio extrapolation as the LAD-MIL forecast
+(`ee9b886749ca`, settled lost, RETRO-20261013-0015): devig the favorite's
+ML and spread-cover probabilities, take r = P(fav covers)/P(fav ML win),
+apply r to the dog's ML win prob to estimate the dog's cover prob. Here:
+Guardians ML 0.450, Rays ML 0.550, Rays covers-1.5 0.351, r=0.638 →
+Guardians covers-1.5 ≈ 0.287 vs PM ask 0.32 (model edge negative, -0.033 —
+favors the already-tiny Rays-side edge of +0.013 instead). Recorded
+unvalidated-method (`855d4035dd0b`), no bet. Two uses now (one settled
+lost, one pending); not enough to rule on the method, but worth a formal
+bar before a third use claims a real edge: **pre-registering** forecast-
+only until n>=5 independent games settle with this exact r-transfer
+method, graded same as the totals Normal-fit (direction-of-miss tally,
+since r borrowed from the favorite's distribution could systematically
+mis-scale the dog's).
+
 **Third candidate instance, imported-sigma, NOT yet tallied (2026-10-13
 01:5xZ TRIGGERED cycle):** MIL@LAD (Oct 14), two new PM markets
 (5639253 O/U8.5, 5639252 O/U6.5) fired the watcher on creation, same
