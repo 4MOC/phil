@@ -9197,3 +9197,51 @@ no higher than ~0.20 at that point. Evidence: Putin–Lukashenko in
 Turkmenistan (cd313e1a0767 at 0.55, +0.091 dBrier; supersede b98a8b8e215c
 at 0.25, -0.031) — resolved No; the TASS bilateral list was already out at
 the first record. Revisit at n>=3.
+
+## DEEP-2026-10-13 rulings
+
+- **OVV relaxation fork: NOT MET (22nd).** I used `core/counterfactual.py
+  ledger --skip-reason outside-view-veto`.
+  - Totals: 249 rows, 173 events, +$194.68, dBrier +0.0243.
+  - Fold dBrier: f0 +0.005, f1 +0.037, f2 +0.060, f3 +0.027, f4 -0.007.
+  - Gate 1 needs the last two folds negative, and f3 is not. The veto
+    stays.
+  - Next pre-registered re-check: when the next fold (about 50 new OVV
+    rows) completes, run the fork if f4 is still negative.
+- **Never act on the tool's countable-metric "MET" line without a
+  hand-cleaned read.**
+  - On 10-13 it printed MET on 15 rows. Three of them are not
+    countable-metric: f41e0b09f084 Alibaba, 25fc1343e0cd Trump SI and
+    607c62b57829 CAQ, together +$114.87.
+  - Cleaned: 12 rows, 10 events, +$42, dBrier -0.069. Without the GTA VI
+    event: +$14, -0.019.
+  - The three genuine rows since 10-05 are 0W/3L: d464b1156ed9,
+    a453b674acf5 and 1c66d0d76610.
+  - The carve-out stays inactive, under the 09-30 ruling. The operator
+    fix to the labeller is escalated in proposals.md.
+- **Blend trigger checked at n=1527: NOT MET.** w_opt is 0.629, and the
+  trigger needed < 0.5. The forecast stream is at the market (+0.0033).
+  The trigger is closed. Record-time estimates may lean on the book, but
+  no gate loosens on the stream.
+- **Box-office book-modal floor: frozen until 8 post-rule events.** Its
+  record is helped 2, hurt 1. The category is at the market (n=42, mean
+  dBrier +0.005). Do not re-tune the floor or the sd per settlement. Log
+  the tally line only. The category stays no-bet.
+- **Spread at the placement quote.** For 83ca60b7499c the record-time
+  book was 0.62/0.68 (0.06), but the fill was 0.69 against bid 0.62
+  (0.07, over `max_spread`).
+  - Rule: the spread check applies to the quote you place against. If
+    it has widened past `max_spread` since the record, the bet is
+    `wide-spread-veto`, unless the info-race exception applies.
+  - The cycle log must state bid/ask for every placed bet.
+- **Funnel weld regressed to 26 gaps in 24h** (it was 2 the day before).
+  - The 16:20Z FULL (2 bets, 18 Youngstown forecasts) wrote no funnel
+    line.
+  - The 01:59Z and 04:05Z TRIGGERED cycles (5 MLB forecasts) wrote none
+    either.
+  - Every FULL and every TRIGGERED cycle that records a forecast appends
+    a funnel line before commit. Run `strategy/tools/reconcile.py`
+    before committing any cycle that placed a bet or recorded a forecast.
+- **No gate changes.** The 2 winning say-the-word bets (transcript-count
+  method; that method is 3/3 bets and its 15 tagged forecasts net -0.034)
+  are insufficient data to move anything.

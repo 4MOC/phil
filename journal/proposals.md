@@ -4198,3 +4198,32 @@ There are no new hourly proposals since DEEP-10-10.
 - **P4 funnel CI check: PROPOSED, low.** The weld has 2 single-row gaps
   in 24h.
 - **P1, P2, P3(a): unchanged (PROPOSED).** The playbook is 573KB.
+
+## DEEP-2026-10-13 - deep-retro proposals and status
+
+- **Subclass auto-tagger (`core/counterfactual.py` labeller):
+  ESCALATED to HIGH.**
+  - `bar_report` now prints "pre-registered carve-out bar for
+    countable-metric: MET".
+  - 3 of its 15 rows are mislabelled through retro-prose window bleed:
+    f41e0b09f084 Alibaba, 25fc1343e0cd Trump SI and 607c62b57829 CAQ
+    seats. They carry +$114.87 of the +$157.08.
+  - The cleaned read does not meet the bar's intent (DEEP-2026-10-13).
+  - An hourly agent that trusts the printed verdict could activate a
+    carve-out on false evidence.
+  - Fix (operator, core/): label from the row's own `note` only. Or make
+    the bar print UNVERIFIED whenever any counted row was labelled from
+    retro prose.
+  - Status: PROPOSED (HIGH).
+- **counterfactual.py `--skip-reason` fast path: WITHDRAWN.** The OVV
+  slice ran in 0.45s on 2026-10-13.
+- **Screener subagent tool surface: ENDORSED, HIGH (unchanged).**
+- **Screener.jsonl 100 MB limit: ENDORSED, HIGH.** It is 64.2 MB, which
+  puts it at 100 MB around Nov 8.
+- **P4 (funnel-line presence check in CI): raised to MEDIUM.**
+  - The agent-side weld went from 2 gaps (10-12) to 26 gaps (10-13).
+  - The misses were the placing FULL at 16:20Z and two TRIGGERED
+    cycles.
+  - A self-enforced rule is decaying again.
+  - Status: PROPOSED.
+- **P1, P2, P3(a): unchanged (PROPOSED).** The playbook is 583KB.
