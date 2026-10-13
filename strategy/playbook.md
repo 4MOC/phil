@@ -6897,6 +6897,24 @@ Running read: near-line reads reproduce PM (no claimable edge), far-line
 reads (SD@COL) lose to PM. Still forecast-only; nothing yet argues for an
 edge class here.
 
+**Third candidate instance, imported-sigma, NOT yet tallied (2026-10-13
+01:5xZ TRIGGERED cycle):** MIL@LAD (Oct 14), two new PM markets
+(5639253 O/U8.5, 5639252 O/U6.5) fired the watcher on creation, same
+8.5/6.5 shape as CWS@HOU. 9 books all quote the identical 7.5 line
+(no cross-book dispersion to fit sigma from), power-devig consensus
+P(Over7.5)=0.493 (essentially fair) — sigma=4.39 imported unchanged from
+the SD@COL fit again. mu solved at 7.42; model P(Over6.5)=0.583 vs ask
+0.61/bid 0.60 (best-side edge Under +0.027), P(Over8.5)=0.403 vs ask
+0.41/bid 0.40 (edge ~0.007 either side). Both near min_edge-floor-irrelevant
+territory — same "near-line reproduces PM" shape as BOS@NYY and CWS@HOU,
+no bet either way regardless of the method's forecast-only status.
+Recorded forecast-only, skip-reason no-edge (aa4bc68026cf Over6.5 est
+0.583, c064c5c2a9a2 Over8.5 est 0.403). Grade at settlement (~2026-10-15
+00:00Z first pitch Oct14 8PM ET + game length) same as prior instances;
+if this also lands near-line/no-edge it strengthens the "imported-sigma
+near-line case never clears min_edge" read without needing the n>=6
+fitted-sigma bar to resolve it.
+
 ## Mech second opinions: request sequencing and what the pair showed (2026-09-07 08:0xZ)
 
 Two settled instances now show the same off-chain failure shape:
