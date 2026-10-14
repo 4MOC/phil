@@ -167,7 +167,26 @@ PY
          "Bash(git checkout -B main HEAD)"
          "Bash(git rebase --continue)" "Bash(git rebase --abort)"
          "Bash(git rebase --quit)"
-         "Bash(git pull:*)")
+         "Bash(git pull:*)"
+         "Bash(printenv PHIL_LEASE)" "Bash(printenv PHIL_PUSH_BY_LOOP)"
+         "Bash(date -u)" "Bash(date -u +%Y-%m-%dT%H:%MZ)"
+         "Bash(python3 strategy/tools/reconcile.py:*)"
+         "Bash(python3 strategy/tools/touch.py:*)"
+         "Bash(python3 strategy/tools/devig.py:*)")
+  # Windows (operator, 2026-10-14): Claude Code there also offers a
+  # PowerShell tool, which this Bash allowlist does not cover. A FULL tick
+  # on Opus 5.5 reached for it, every call needed an approval no headless
+  # session can give, and the cycle stopped before step 0. With PowerShell
+  # off the agent stays on Bash. printenv is allowed for exactly the two
+  # variables step 0 and step 9 read - never bare, which would print every
+  # environment variable into the transcript - and date only in its two
+  # exact forms (a prefix rule would also allow `date -f FILE`, which
+  # prints any file). The three strategy tools are the ones the playbook
+  # makes mandatory (reconcile.py gates every forecast-recording commit);
+  # they add no power core/scan.py does not already have, since it imports
+  # the agent-owned strategy/discovery.py. `git diff --no-index` would read
+  # files outside the repo, so it is denied under the git diff allowance.
+  DISALLOWED=("PowerShell" "Bash(git diff --no-index:*)")
   if [ "$PEARL_UP" -eq 1 ]; then
     # wallet_info is read-only; the mech_* tools buy predictions from the
     # Olas mech marketplace (~$0.01 USDC each, paid by the service safe) per
@@ -176,10 +195,14 @@ PY
           "mcp__pearl-connect__mech_tools"
           "mcp__pearl-connect__mech_request"
           "mcp__pearl-connect__mech_result"
-          --mcp-config "$STORE/.mcp.json"
-          --disallowedTools "Read($STORE/.mcp.json)")
+          --mcp-config "$STORE/.mcp.json")
+    # A permission path needs a leading // to be absolute; "/x" is read
+    # relative to the project. cygpath gives Git Bash's /c/... form.
+    STORE_ABS="$STORE"
+    if command -v cygpath >/dev/null 2>&1; then STORE_ABS="$(cygpath -u "$STORE")"; fi
+    DISALLOWED+=("Read(/$STORE_ABS/.mcp.json)")
   fi
-  CMD+=(--permission-mode acceptEdits)
+  CMD+=(--disallowedTools "${DISALLOWED[@]}" --permission-mode acceptEdits)
 
   # PHIL_PUSH_BY_LOOP tells CYCLE.md step 9 to commit but not push — the push
   # happens below, in this shell. GIT_TERMINAL_PROMPT/GIT_ASKPASS make any

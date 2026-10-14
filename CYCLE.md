@@ -48,6 +48,34 @@ forecast rows stay open while the block lasts; that is expected, not a
 discrepancy to diagnose. Do not suggest network workarounds in logs or
 retros.
 
+**Commands on this machine.** `loop.sh` runs you headless with a fixed
+allowlist and nobody to approve anything else, so a command outside it is
+simply refused (2026-10-14: a FULL tick stopped at step 0 this way).
+
+- Use the Bash tool only; the PowerShell tool is off in loop runs.
+- One plain command per call, from the repo root, written as this procedure
+  writes it. No `$(...)`, backticks or `$VAR` expansions, no `cd` or
+  `git -C`, and no pipes or `&&` into programs outside the allowlist
+  (`head`, `tail`, `grep`, `awk`, `env`, `echo` ...). `git add -A && git
+  commit ...` is fine: both halves are allowed.
+- `printenv PHIL_LEASE` and `printenv PHIL_PUSH_BY_LOOP` read the two loop
+  variables; `date -u +%Y-%m-%dT%H:%MZ` (or `date -u`) gives the time - no
+  other `date` options. Never bare `printenv` or `env`.
+- The strategy tools loop runs may execute are `strategy/tools/reconcile.py`,
+  `touch.py` and `devig.py`, as plain `python3 strategy/tools/<tool>.py ...`
+  commands. Where the playbook pipes them (`reconcile.py | tail -1`), run
+  the plain command and quote the last line it prints; find this cycle's
+  funnel row with the Grep tool instead of `tail -1 | cut`. reconcile.py
+  reads only `journal/forecasts.jsonl`, so in phase A it does not see Myriad
+  forecasts: extending it (your tool) is the honest fix - never paste an
+  `OK` line it did not print.
+- For `--strategy-rev`, run `git rev-parse --short HEAD` once and paste the
+  hash literally instead of `$(git rev-parse --short HEAD)`.
+- Read and count files (cycles.log for pacing, the journals) with the Read
+  and Grep tools, not shell filters.
+- If a command is refused anyway, do not end the tick: switch to the plain
+  form or the Read/Grep tools and note the refusal in the cycle log line.
+
 Until the operator says otherwise, the venue is **Myriad Markets, forecasts
 only (phase A)**. Where the procedure below says otherwise, this section wins:
 
