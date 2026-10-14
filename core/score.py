@@ -26,6 +26,10 @@ import pmapi  # noqa: E402
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 LEDGER = ROOT / "journal" / "ledger.jsonl"
 FORECASTS = ROOT / "journal" / "forecasts.jsonl"
+# Myriad forecasts (operator, 2026-10-14) get their own section and JSON key,
+# "forecasts_myriad": a different venue's price is a different benchmark, so
+# its brier_delta is never pooled with the Polymarket era's.
+FORECASTS_MYRIAD = ROOT / "journal" / "forecasts-myriad.jsonl"
 
 
 def stats(entries):
@@ -243,9 +247,15 @@ def mark_to_market(open_entries):
     """Best-effort live marks for open positions (needs network)."""
     now = dt.datetime.now(dt.timezone.utc)
     rows = []
-    for e in open_entries:
+    for i, e in enumerate(open_entries):
         try:
             bid, ask = pmapi.best_prices(e["token_id"])
+        except pmapi.Blocked:
+            # HTTP 451: every later position would be refused too; ask once.
+            rows.extend({"id": x["id"], "error": "polymarket blocked (451); not asked "
+                                                  "again this run"}
+                        for x in open_entries[i:])
+            break
         except Exception as err:  # noqa: BLE001 — MTM is advisory, never fatal
             rows.append({"id": e["id"], "error": str(err)[:80]})
             continue
@@ -276,15 +286,19 @@ def main():
         if LEDGER.exists() else []
     frows = [json.loads(line) for line in FORECASTS.read_text().splitlines() if line.strip()] \
         if FORECASTS.exists() else []
+    mrows = [json.loads(line) for line in FORECASTS_MYRIAD.read_text().splitlines()
+             if line.strip()] if FORECASTS_MYRIAD.exists() else []
     settled = [e for e in entries if e["status"] in ("won", "lost")]
     if not settled:
         print(json.dumps({"settled": 0, "open": sum(1 for e in entries if e["status"] == "open"),
-                          "forecasts": forecast_report(frows)}))
+                          "forecasts": forecast_report(frows),
+                          "forecasts_myriad": forecast_report(mrows)}))
         return
 
     report = {"overall": stats(settled), "luck_adjusted": luck_adjusted(settled),
               "by_edge_class": {}, "by_category": {}, "by_strategy_rev": {},
-              "calibration": [], "forecasts": forecast_report(frows)}
+              "calibration": [], "forecasts": forecast_report(frows),
+              "forecasts_myriad": forecast_report(mrows)}
     by_class = defaultdict(list)
     by_cat = defaultdict(list)
     by_rev = defaultdict(list)
@@ -386,6 +400,19 @@ def main():
                                  for b in s["by_weight"]))
     else:
         print(f"\nforecasts: settled=0 open={fr.get('open', 0)}")
+    mr = report["forecasts_myriad"]
+    if mr.get("overall"):
+        mo, mla = mr["overall"], mr["luck_adjusted"]
+        print("\nforecasts [myriad] (stake-free, Myriad book mid baseline — never pooled "
+              "with the Polymarket rows above):")
+        print(f"  settled={mo['n']} open={mr['open']} win_rate={mo['win_rate']} "
+              f"brier_delta={mo['brier_delta']:+.4f} z={mla['z']:+.2f}")
+        for cat, s in mr["by_category"].items():
+            print(f"  {cat:16} n={s['n']:3} brier_delta={s['brier_delta']:+.4f}")
+        print("  calibration: " + "  ".join(
+            f"{c['est_range']}:n={c['n']},r={c['realized']:.2f}" for c in mr["calibration"]))
+    elif mr.get("open") or (mr.get("revised_away") or {}).get("open"):
+        print(f"\nforecasts [myriad]: settled=0 open={mr.get('open', 0)}")
 
 
 if __name__ == "__main__":

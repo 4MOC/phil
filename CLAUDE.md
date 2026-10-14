@@ -21,6 +21,12 @@ retrospective → edit its own strategy → research → place simulated bets.
   self-improves. Its git history IS the experiment's product.
 - `journal/` — ledger (JSONL, written only by core), retros, cycle log.
 - `CYCLE.md` — the per-cycle procedure the headless agent follows.
+- Venue (operator, 2026-10-14): this fork runs in South Korea, where
+  Polymarket answers HTTP 451 and is never worked around. `core/myriad.py`
+  makes Myriad Markets a forecasts-only venue (phase A): order-book,
+  real-money, non-sports markets, rows in `journal/forecasts-myriad.jsonl`,
+  scored separately from the Polymarket era. Rules: `config/protected.json`
+  `venues` block and CYCLE.md's venue section.
 
 ## Purpose
 

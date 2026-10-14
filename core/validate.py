@@ -11,7 +11,10 @@ Checks that an unattended cycle cannot have left the repo broken or unsafe:
     and their load-bearing fields are sane
   - the agent's editable sizing policy stays inside the protected caps
   - journal/ledger.jsonl is well-formed and every row respects the caps
-  - journal/forecasts.jsonl (stake-free forecasts) rows are well-formed
+  - journal/forecasts.jsonl (stake-free forecasts) rows are well-formed, and
+    so are journal/forecasts-myriad.jsonl's, each file holding only its venue
+  - the venues block keeps Myriad forecasts-only, order-book-only and
+    sports-free
   - the screener block stays inside its hard batch/pool ceilings, and
     journal/screener-quota/*.json and the screener logs
     (journal/screener/*.jsonl, plus the pre-rotation journal/screener.jsonl)
@@ -117,6 +120,45 @@ if protected:
         if not isinstance(protected.get(field), (int, float)):
             err(f"config/protected.json: {field} missing or not numeric")
 
+    # Venue block (operator, 2026-10-14). Myriad is forecasts-only until a
+    # Myriad paper broker exists; ledger.py can only fill on Polymarket, so a
+    # bets_enabled flip without that broker would be a promise core can't keep.
+    venues = protected.get("venues")
+    if venues is not None:
+        myr = venues.get("myriad") if isinstance(venues, dict) else None
+        if not isinstance(myr, dict):
+            err("config/protected.json: venues.myriad missing or not an object")
+        else:
+            for field in ("forecasts_enabled", "bets_enabled"):
+                if myr.get(field) not in (True, False):
+                    err(f"config/protected.json: venues.myriad.{field} must be a boolean")
+            if myr.get("bets_enabled") is True:
+                err("config/protected.json: venues.myriad.bets_enabled is true, but "
+                    "core has no Myriad paper broker yet (phase B)")
+            def as_set(field):
+                v = myr.get(field)
+                return set(v) if isinstance(v, list) else set()
+
+            # Allowlists and required exclusions, not denylists: a new model,
+            # token or dropped exclusion must fail here, not slip through.
+            if myr.get("trading_models") != ["ob"]:
+                err("config/protected.json: venues.myriad.trading_models must be "
+                    "exactly ['ob'] - an AMM price is not a book a paper order "
+                    "could cross")
+            if not (as_set("collateral_symbols") and as_set("collateral_symbols") <= {"USD1"}):
+                err("config/protected.json: venues.myriad.collateral_symbols must be "
+                    "['USD1'] - no play-money points (PTS)")
+            if not {"Sports", "Gaming"} <= as_set("excluded_topics"):
+                err("config/protected.json: venues.myriad.excluded_topics must keep "
+                    "'Sports' and 'Gaming' (National Sports Promotion Act)")
+            if not {"sport", "league", "team"} <= as_set("excluded_tag_types"):
+                err("config/protected.json: venues.myriad.excluded_tag_types must "
+                    "keep 'sport', 'league' and 'team'")
+            if not isinstance(myr.get("sim_bankroll_usd"), (int, float)) \
+                    or myr["sim_bankroll_usd"] <= 0:
+                err("config/protected.json: venues.myriad.sim_bankroll_usd must "
+                    "be a positive number")
+
     screener = protected.get("screener")
     if not isinstance(screener, dict):
         err("config/protected.json: the 'screener' block is missing - "
@@ -170,6 +212,9 @@ if ledger_path.exists() and protected:
         if missing:
             err(f"ledger.jsonl:{lineno}: missing fields {sorted(missing)}")
             continue
+        if row.get("venue", "polymarket") != "polymarket":
+            err(f"ledger.jsonl:{lineno}: venue {row.get('venue')!r} - the paper "
+                f"ledger is Polymarket-only until a broker for that venue exists")
         if row["status"] not in LEDGER_STATUSES:
             err(f"ledger.jsonl:{lineno}: unknown status {row['status']!r}")
         if row["status"] != "open" and not ("pnl_usd" in row and "settled_ts" in row):
@@ -184,29 +229,45 @@ if ledger_path.exists() and protected:
         if not 0 < row["est_prob"] <= 1:
             err(f"ledger.jsonl:{lineno}: est_prob {row['est_prob']} outside (0, 1]")
 
-forecasts_path = ROOT / "journal" / "forecasts.jsonl"
-if forecasts_path.exists():
-    for lineno, line in enumerate(forecasts_path.read_text().splitlines(), 1):
+def check_forecasts(path, venue):
+    """Polymarket rows carry no venue field; Myriad rows must say "myriad", so
+    a row can never land in the other venue's file unnoticed."""
+    name = path.name
+    for lineno, line in enumerate(path.read_text().splitlines(), 1):
         if not line.strip():
             continue
         try:
             row = json.loads(line)
         except json.JSONDecodeError as e:
-            err(f"forecasts.jsonl:{lineno}: invalid JSON — {e}")
+            err(f"{name}:{lineno}: invalid JSON — {e}")
             continue
         missing = FORECAST_REQUIRED - row.keys()
         if missing:
-            err(f"forecasts.jsonl:{lineno}: missing fields {sorted(missing)}")
+            err(f"{name}:{lineno}: missing fields {sorted(missing)}")
             continue
+        if row.get("venue", "polymarket") != venue:
+            err(f"{name}:{lineno}: venue {row.get('venue')!r} in the {venue} file")
         if row["status"] not in LEDGER_STATUSES:
-            err(f"forecasts.jsonl:{lineno}: unknown status {row['status']!r}")
+            err(f"{name}:{lineno}: unknown status {row['status']!r}")
         if row["status"] != "open" and "settled_ts" not in row:
-            err(f"forecasts.jsonl:{lineno}: settled row lacks settled_ts")
+            err(f"{name}:{lineno}: settled row lacks settled_ts")
+        if venue == "myriad" and row["status"] != "open" and "settled_ts" in row:
+            # resolve.py stamps the hour it saw the resolution; a future
+            # stamp would put the row on the wrong side of every time split.
+            check_iso_z(name, f"line {lineno} settled_ts", row["settled_ts"])
+            if isinstance(row["settled_ts"], str) and row["settled_ts"] > \
+                    dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"):
+                err(f"{name}:{lineno}: settled_ts {row['settled_ts']} is in the future")
         if not 0 < row["est_prob"] < 1:
-            err(f"forecasts.jsonl:{lineno}: est_prob {row['est_prob']} outside (0, 1)")
+            err(f"{name}:{lineno}: est_prob {row['est_prob']} outside (0, 1)")
         if not 0 <= row["market_prob_at_record"] <= 1:
-            err(f"forecasts.jsonl:{lineno}: market_prob_at_record "
+            err(f"{name}:{lineno}: market_prob_at_record "
                 f"{row['market_prob_at_record']} outside [0, 1]")
+
+
+for venue, fname in (("polymarket", "forecasts.jsonl"), ("myriad", "forecasts-myriad.jsonl")):
+    if (ROOT / "journal" / fname).exists():
+        check_forecasts(ROOT / "journal" / fname, venue)
 
 screener_quota_dir = ROOT / "journal" / "screener-quota"
 if (ROOT / "journal" / "screener-quota.json").exists():

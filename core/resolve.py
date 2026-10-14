@@ -10,6 +10,14 @@ decisive prices (disputed/void) settle as void after a grace period (stake
 returned for bets; forecasts are excluded from scoring). Rewrites both files
 in place (single writer, alongside ledger.py/forecast.py appends).
 
+Myriad forecasts (journal/forecasts-myriad.jsonl, operator 2026-10-14) settle
+against Myriad's own resolution: state "resolved" plus resolvedOutcomeId, or
+voided -> void. Nothing is voided on a timer there - a Myriad market that is
+late to resolve stays open, because only the venue's resolution counts.
+
+A venue that refuses this machine (HTTP 451) is asked once per run, not once
+per row: its rows stay open and the run says so.
+
 Usage: python3 core/resolve.py
 """
 import datetime as dt
@@ -18,11 +26,13 @@ import pathlib
 import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import myriad  # noqa: E402
 import pmapi  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 LEDGER = ROOT / "journal" / "ledger.jsonl"
 FORECASTS = ROOT / "journal" / "forecasts.jsonl"
+FORECASTS_MYRIAD = ROOT / "journal" / "forecasts-myriad.jsonl"
 VOID_GRACE_HOURS = 48
 
 
@@ -97,24 +107,72 @@ def settle_against_market(e, m, now):
     return False
 
 
+def settle_against_myriad(r, m, now):
+    """Settle one open Myriad forecast row against a fetched Myriad market.
+    Returns True if settled.
+
+    Myriad publishes no resolution time, and expiresAt is not one ("hit in
+    <month>" markets resolve weeks before it, others after it), so settled_ts
+    is the UTC hour this run first saw the resolution: never in the future,
+    and identical for any runner settling the row within that hour (cycles
+    are lease-serialized). end_date keeps expiresAt."""
+    kind, winner = myriad.resolution(m)
+    if kind is None:
+        return False
+    r["settled_ts"] = now.strftime("%Y-%m-%dT%H:00:00Z")
+    if kind == "void":
+        r["status"] = "void"
+        return True
+    r["status"] = "won" if r["outcome"] == winner else "lost"
+    r["outcome_won"] = winner
+    return True
+
+
 def main():
     entries = load_jsonl(LEDGER)
     forecasts = load_jsonl(FORECASTS)
-    if not entries and not forecasts:
+    mforecasts = load_jsonl(FORECASTS_MYRIAD)
+    if not entries and not forecasts and not mforecasts:
         print("resolve: no ledger yet")
         return
     now = dt.datetime.now(dt.timezone.utc)
 
     market_cache = {}
+    blocked = {}
 
     def get_market(market_id):
+        if "polymarket" in blocked:
+            return None
         if market_id not in market_cache:
             try:
                 market_cache[market_id] = pmapi.gamma_market(market_id)
+            except pmapi.Blocked as err:
+                blocked["polymarket"] = str(err)
+                print(f"resolve: polymarket refuses this machine ({err}); "
+                      f"not asking again this run, its rows stay open", file=sys.stderr)
+                return None
             except RuntimeError as err:
                 print(f"resolve: fetch failed for {market_id}: {err}", file=sys.stderr)
                 market_cache[market_id] = None
         return market_cache[market_id]
+
+    myriad_cache = {}
+
+    def get_myriad(slug):
+        if "myriad" in blocked:
+            return None
+        if slug not in myriad_cache:
+            try:
+                myriad_cache[slug] = myriad.market(slug)
+            except myriad.Blocked as err:
+                blocked["myriad"] = str(err)
+                print(f"resolve: myriad refuses this machine ({err}); "
+                      f"not asking again this run, its rows stay open", file=sys.stderr)
+                return None
+            except RuntimeError as err:
+                print(f"resolve: myriad fetch failed for {slug}: {err}", file=sys.stderr)
+                myriad_cache[slug] = None
+        return myriad_cache[slug]
 
     settled, fsettled = [], []
     for e in entries:
@@ -129,10 +187,19 @@ def main():
         m = get_market(r["market_id"])
         if m is not None and settle_against_market(r, m, now):
             fsettled.append(r)
+    msettled = []
+    for r in mforecasts:
+        if r["status"] != "open":
+            continue
+        m = get_myriad(r["market_id"])
+        if m is not None and settle_against_myriad(r, m, now):
+            msettled.append(r)
 
     dump_jsonl(LEDGER, entries)
     if forecasts:
         dump_jsonl(FORECASTS, forecasts)
+    if mforecasts:
+        dump_jsonl(FORECASTS_MYRIAD, mforecasts)
 
     for e in settled:
         print(f"{e['status'].upper():5} {e['pnl_usd']:+7.2f}  est={e['est_prob']:.2f} "
@@ -140,10 +207,16 @@ def main():
     for r in fsettled:
         print(f"FCAST {r['status'].upper():5} est={r['est_prob']:.2f} "
               f"mkt={r['market_prob_at_record']:.2f}  [{r['category']}] {r['question'][:70]}")
+    for r in msettled:
+        print(f"MYRIAD {r['status'].upper():5} est={r['est_prob']:.2f} "
+              f"mkt={r['market_prob_at_record']:.2f}  [{r['category']}] {r['question'][:70]}")
     print(f"resolve: settled {len(settled)} of {sum(1 for e in entries if e['status'] != 'open') + len(settled)} "
           f"({sum(1 for e in entries if e['status'] == 'open')} still open); "
           f"forecasts settled {len(fsettled)} "
-          f"({sum(1 for r in forecasts if r['status'] == 'open')} still open)")
+          f"({sum(1 for r in forecasts if r['status'] == 'open')} still open); "
+          f"myriad forecasts settled {len(msettled)} "
+          f"({sum(1 for r in mforecasts if r['status'] == 'open')} still open)"
+          + "".join(f"; {v} refuses this machine, its rows left open" for v in sorted(blocked)))
 
 
 if __name__ == "__main__":

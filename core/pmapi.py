@@ -4,12 +4,22 @@ PROTECTED CORE — the trading agent must not edit files under core/.
 """
 import json
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 
 GAMMA = "https://gamma-api.polymarket.com"
 CLOB = "https://clob.polymarket.com"
 UA = {"User-Agent": "pearl-explorations-paper-trader/0.1"}
+
+
+class Blocked(RuntimeError):
+    """HTTP 451: Polymarket refuses this machine for legal reasons.
+
+    Not transient, so it is raised at once instead of after retries, and
+    callers that loop over many markets stop asking (operator, 2026-10-14: a
+    LIGHT tick on a machine in South Korea spent its whole time limit
+    retrying 451s). It is never something to work around."""
 
 
 def get_json(url, params=None, retries=3):
@@ -21,6 +31,11 @@ def get_json(url, params=None, retries=3):
             req = urllib.request.Request(url, headers=UA)
             with urllib.request.urlopen(req, timeout=30) as resp:
                 return json.load(resp)
+        except urllib.error.HTTPError as e:
+            if e.code == 451:
+                raise Blocked(f"GET {url} refused: HTTP 451 {e.reason}") from e
+            last_err = e
+            time.sleep(1.5 * (attempt + 1))
         except Exception as e:  # noqa: BLE001 — retry then surface
             last_err = e
             time.sleep(1.5 * (attempt + 1))

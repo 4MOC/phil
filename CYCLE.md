@@ -36,6 +36,49 @@ every candidate sits in one bucket, a whole research channel fails, or a
 category never appears, say so there. Cycle logs record symptoms; proposals
 get causes fixed.
 
+## Venue on this machine (operator, 2026-10-14)
+
+This fork runs only on the operator's machine in South Korea. Polymarket
+answers HTTP 451 (Unavailable For Legal Reasons) to every request from here,
+and Korea blocked Polymarket on 2026-08-18. **Never work around that**: no
+VPN, proxy, mirror, cached copy, alternate domain, or web search used to
+recover Polymarket prices, and never open a polymarket.com URL (including the
+`externalSources` links inside Myriad records). Polymarket ledger and
+forecast rows stay open while the block lasts; that is expected, not a
+discrepancy to diagnose. Do not suggest network workarounds in logs or
+retros.
+
+Until the operator says otherwise, the venue is **Myriad Markets, forecasts
+only (phase A)**. Where the procedure below says otherwise, this section wins:
+
+- Step 1 runs as written. `core/resolve.py` asks Polymarket once, stops after
+  the 451, and settles Myriad forecasts against Myriad's own resolution.
+- Step 2 runs as written; grade Myriad from the `forecasts [myriad]` section
+  (JSON key `forecasts_myriad`). Myriad and Polymarket results are separate
+  eras - never pool or compare their brier_delta as one series.
+- Step 4: instead of `core/scan.py | core/screen.py`, run
+  `python3 core/myriad.py scan --hours 720`. The admissible pool is tens of
+  markets, so there are no screener batches; write `screened`, `escalated`
+  and `screener_batches` as 0 and add `"venue": "myriad"` to the funnel row.
+  `core/myriad.py` already drops sports and esports markets, AMM and
+  play-money markets, and anything the protected patterns ban; do not
+  research those by passing a slug directly (forecast.py rejects them too).
+- Step 5: research as the playbook says. Tools that call Polymarket
+  (`strategy/tools/quote.py`, `siblings.py`, the watch routine) cannot work
+  here; do not use `strategy/tools/kalshi.py` either - Kalshi's data terms do
+  not permit this use. Steps 5a (mech) and 5c (Headline Arena) are skipped.
+- Step 5b: `python3 core/forecast.py record --venue myriad --market-id <slug>
+  --outcome "<Yes|No>" ...` with the slug from the scan line's `market_id`;
+  everything else in 5b is unchanged. These rows go to
+  `journal/forecasts-myriad.jsonl` (written only by `core/forecast.py` and
+  `core/resolve.py`).
+- Step 6: **no bets on any venue in phase A.** Myriad bets are disabled in
+  `config/protected.json`, and Polymarket cannot fill from here.
+- Open-position monitor: Polymarket positions cannot be marked from here;
+  write `monitor: polymarket blocked (451)` once and skip it.
+- Step 7: the log line keeps its format; add `venue myriad (phase A,
+  forecasts only)` to the detail.
+
 ## Tick types
 
 Every invocation runs as one of three ticks:

@@ -19,7 +19,19 @@
     "max_batches_per_day": 150,
     "max_pool_after_strata": 400
   },
-  "real_trading_enabled": true,
+  "venues": {
+    "_comment": "Operator, 2026-10-14. Polymarket refuses this fork's machine (HTTP 451; South Korea blocked it on 2026-08-18), and it is never to be worked around. Myriad Markets is the phase-A venue: stake-free forecasts only, from its public read API, written to journal/forecasts-myriad.jsonl and never pooled with Polymarket history. bets_enabled stays false until a Myriad paper broker exists (phase B); that broker starts from its own sim_bankroll_usd. Sports and esports markets are excluded (National Sports Promotion Act: no supplying information for unlicensed sports betting; this journal is public). core/myriad.py enforces every field here.",
+    "myriad": {
+      "forecasts_enabled": true,
+      "bets_enabled": false,
+      "sim_bankroll_usd": 1000.0,
+      "trading_models": ["ob"],
+      "collateral_symbols": ["USD1"],
+      "excluded_topics": ["Sports", "Gaming"],
+      "excluded_tag_types": ["sport", "league", "team"]
+    }
+  },
+  "real_trading_enabled": false,
   "real": {
     "_comment": "Caps for real execution via Pearl Connect (laptop only). Hard ceilings live in core/validate.py; raising them is a protected-core edit by design.",
     "max_stake_usd": 1.0,
