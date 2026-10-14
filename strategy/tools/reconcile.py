@@ -9,7 +9,7 @@ DEEP-2026-08-20 declared the next recurrence a compliance pattern; this is
 the escalation: a mechanical check instead of more prose.
 
 Checks, over a trailing window (default 24h):
-  1. Every forecasts.jsonl row's id appears in some funnel.jsonl
+  1. Every forecasts.jsonl / forecasts-myriad.jsonl row's id appears in some funnel.jsonl
      `researched[].forecast_id` (substring match — funnel entries may
      annotate the id, e.g. "df7062f3e89d (existing, unchanged)").
   2. Every funnel `researched` entry with an estimate-bearing skip reason
@@ -117,7 +117,11 @@ def main():
     args = ap.parse_args()
     cutoff = datetime.now(timezone.utc) - timedelta(hours=args.hours)
 
-    forecasts = load_jsonl(ROOT / "journal" / "forecasts.jsonl")
+    # 2026-10-14: Myriad (phase A) forecasts live in their own file; without
+    # it every Myriad row would be invisible to checks 1 and 5.
+    forecasts = load_jsonl(ROOT / "journal" / "forecasts.jsonl") + load_jsonl(
+        ROOT / "journal" / "forecasts-myriad.jsonl"
+    )
     funnel = load_jsonl(ROOT / "strategy" / "funnel.jsonl")
 
     funnel_ids = []          # all forecast_id strings seen in funnel entries

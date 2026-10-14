@@ -9222,6 +9222,20 @@ the Kyiv cap. Evidence: 09e63789f04c Hormuz Oct 7. The base rate was
 I recorded 0.60 against a 0.80 mid. It resolved Yes, dBrier +0.120.
 Provisional at n=1; revisit at n>=3.
 
+## 2026-10-14 05:0xZ: table rows owed by RETRO-20261013-1240 / -1430 (FULL, operator)
+
+Both retros graded these rows in prose but left the table unextended;
+`reconcile.py` check 5 flagged them on the 2026-10-14 04:58Z FULL.
+
+| Row | own/mkt | Side | Edge | Result | CF pnl |
+|---|---|---|---|---|---|
+| JNJ Q3 IM rev >17B (`93f175782016`, OVV, earnings) | 0.25/0.45 | No | +0.11 (No @0.64, spread 0.18) | No | +2.81 |
+| GS Q3 EPS beat 16.41 (`e8b241c3ee5e`, OVV, earnings-beat) | 0.30/0.425 | No | +0.12 (No @0.58) | Yes | -5.00 |
+
+Mechanical ledger (`core/counterfactual.py`): OVV 254 rows, 246 fillable,
+104W/142L, +$177.49, dBrier +0.0261. Net on the pair -$2.19; the veto
+saved $2.19. No boundary change (n=2, scheduled-print earnings, one each way).
+
 ## DEEP-2026-10-13 rulings
 
 - **OVV relaxation fork: NOT MET (22nd).** I used `core/counterfactual.py
